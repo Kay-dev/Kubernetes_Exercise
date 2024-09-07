@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: logimages-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: logimages
+  template:
+    metadata:
+      labels:
+        app: logimages
+    spec:
+      volumes:
+        - name: log-volume
+          emptyDir: {}
+      containers:
+        - name: log-read
+          image: sonawei/log-output-read:v1.10
+          volumeMounts:
+            - name: log-volume
+              mountPath: /usr/src/app/files
+        - name: log-write
+          image: sonawei/log-output-write:v1.10
+          volumeMounts:
+            - name: log-volume
+              mountPath: /usr/src/app/files

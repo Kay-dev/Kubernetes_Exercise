@@ -4,6 +4,8 @@ const app = new Koa()
 const port = process.env.PORT || 3000;
 const router = new Router();
 
+const fs = require('fs');
+
 function randomString(length) {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let result = '';
@@ -12,14 +14,24 @@ function randomString(length) {
     }
     return result;
 }
-// generate random string
-const str = randomString(30);
 
-// print time and string
+const filePath = '/usr/src/app/files/log.txt';
+
 router.get('/', (ctx) => {
-    ctx.status = 200;
     let time = new Date().toISOString();
-    ctx.body = time + ': ' + str;
+    const str = randomString(30);
+    let pingpong = "";
+    // read file content
+    if(fs.existsSync(filePath)) {
+        try {
+            pingpong = fs.readFileSync(filePath, 'utf8'); // Synchronous file read
+        } catch (err) {
+            console.log('Error reading file:', err);
+        }
+    }
+    ctx.status = 200;
+    console.log("pingpong: " + pingpong);
+    ctx.body = `${time}: ${str}\n${pingpong}`;
 });
 
 app.use(router.routes()).use(router.allowedMethods());
@@ -27,3 +39,4 @@ app.use(router.routes()).use(router.allowedMethods());
 app.listen(port, () => {
     console.log(`Server started in port ${port}...`)
 })
+

@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: logimages-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: logimages
+  template:
+    metadata:
+      labels:
+        app: logimages
+    spec:
+      volumes:
+        - name: shared-image
+          persistentVolumeClaim:
+            claimName: logout-claim
+      containers:
+        - name: log-output
+          image: sonawei/log-output:v1.11
+          volumeMounts:
+            - name: shared-image
+              mountPath: /usr/src/app/files
+        - name: pingpong
+          image: sonawei/pingpong:v1.11
+          volumeMounts:
+            - name: shared-image
+              mountPath: /usr/src/app/files
