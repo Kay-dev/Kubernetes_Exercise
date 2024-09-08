@@ -1,0 +1,28 @@
+# deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8s-project-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: k8s-project
+  template:
+    metadata:
+      labels:
+        app: k8s-project
+    spec:
+      volumes:
+        - name: shared-image
+          persistentVolumeClaim:
+            claimName: project-claim
+      containers:
+        - name: k8s-project
+          image: sonawei/k8s-project:v0.6
+          env:
+            - name: PORT
+              value: "3003"
+          volumeMounts:
+            - name: shared-image
+              mountPath: /usr/src/app/files
