@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: logimages-dep
+  namespace: logoutput-ns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: logimages
+  template:
+    metadata:
+      labels:
+        app: logimages
+    spec:
+      containers:
+        - name: log-output
+          image: sonawei/log-output:v2.061
+          env:
+            - name: MESSAGE
+              valueFrom:
+                configMapKeyRef:
+                  name: information
+                  key: information.txt
+        - name: pingpong
+          image: sonawei/pingpong:v2.01

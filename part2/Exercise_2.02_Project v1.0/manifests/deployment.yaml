@@ -1,0 +1,36 @@
+# deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-project-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: todo-project
+  template:
+    metadata:
+      labels:
+        app: todo-project
+    spec:
+      volumes:
+        - name: shared-image
+          persistentVolumeClaim:
+            claimName: project-claim
+      containers:
+        - name: todo-app
+          image: sonawei/todo-app:v2.026
+          env:
+            - name: PORT
+              value: "3003"
+          volumeMounts:
+            - name: shared-image
+              mountPath: /usr/src/app/files
+        - name: todo-backend
+          image: sonawei/todo-backend:v2.022
+          env:
+            - name: PORT
+              value: "3004"
+          volumeMounts:
+            - name: shared-image
+              mountPath: /usr/src/app/files

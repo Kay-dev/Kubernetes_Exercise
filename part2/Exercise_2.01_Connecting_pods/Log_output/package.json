@@ -1,0 +1,17 @@
+{
+  "name": "log_output",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "node index.js"
+  },
+  "dependencies": {
+    "@koa/router": "^13.0.0",
+    "axios": "^1.7.7",
+    "koa": "^2.11.0"
+  },
+  "author": "Zheng Wei",
+  "license": "ISC"
+}

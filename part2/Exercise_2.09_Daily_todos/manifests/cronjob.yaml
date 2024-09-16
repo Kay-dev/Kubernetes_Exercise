@@ -1,0 +1,15 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: daily-todos
+spec:
+  schedule: "0 * * * *" # run every hour
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: daily-todos
+            image: sonawei/daily-todos:v2.09
+            imagePullPolicy: IfNotPresent
+          restartPolicy: OnFailure

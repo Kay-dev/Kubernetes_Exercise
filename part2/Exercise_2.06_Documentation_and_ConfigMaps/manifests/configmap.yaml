@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: information
+data:
+  information.txt: |
+    MESSAGE=hello world
