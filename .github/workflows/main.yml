@@ -94,6 +94,7 @@ jobs:
           docker build --tag "gcr.io/$PROJECT_ID/$TODO_APP_IMAGE:$BRANCH-$GITHUB_SHA" .
           cd ../Todo-backend
           docker build --tag "gcr.io/$PROJECT_ID/$TODO_BACKEND_IMAGE:$BRANCH-$GITHUB_SHA" .
+          cd ../
           docker push "gcr.io/$PROJECT_ID/$TODO_APP_IMAGE:$BRANCH-$GITHUB_SHA"
           docker push "gcr.io/$PROJECT_ID/$TODO_BACKEND_IMAGE:$BRANCH-$GITHUB_SHA"
 
