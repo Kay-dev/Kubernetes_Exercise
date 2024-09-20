@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: loadbalance-svc
+spec:
+  type: LoadBalancer
+  selector:
+    app: pingpong-svc
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 3000
