@@ -13,7 +13,7 @@ env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }} # TODO: update to your Google Cloud project ID
   GKE_CLUSTER: 'autopilot-cluster-3' # TODO: update to your cluster name
   GKE_ZONE: 'us-central1' # TODO: update to your cluster zone
-  DEPLOYMENT_NAME: 'gke-project' # TODO: update to your deployment name
+  DEPLOYMENT_NAME: 'todo-project-dep' # TODO: update to your deployment name
   TODO_APP_IMAGE: 'todo-app'
   TODO_BACKEND_IMAGE: 'todo-backend'
 
