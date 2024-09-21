@@ -5,6 +5,7 @@ const bodyParser = require('koa-bodyparser');
 const cors = require('@koa/cors');
 const app = new Koa()
 const port = process.env.PORT || 3004;
+const router = new Router();
 
 app.use(bodyParser());
 app.use(cors({
