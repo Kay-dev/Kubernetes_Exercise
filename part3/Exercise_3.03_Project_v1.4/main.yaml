@@ -2,8 +2,14 @@ name: 'Build and Deploy to GKE'
 
 on:
   push:
+    branches:
+      - main
+    paths:
+      - 'part3/Exercise_3.03_Project_v1.4/**'
+      - '.github/workflows/v1.4_GKE.yml'
 
 env:
+
   PROJECT_ID: 'pingpong-436120' # TODO: update to your Google Cloud project ID
   GKE_CLUSTER: 'autopilot-cluster-3' # TODO: update to your cluster name
   GKE_ZONE: 'us-central1' # TODO: update to your cluster zone
