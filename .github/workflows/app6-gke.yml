@@ -3,7 +3,7 @@ name: Build and Deploy app6 to GKE
 on:
   push:
     branches: 
-      - master
+      - main
     paths:
       - 'app6/**'
       - '.github/workflows/app6-gke.yml'
