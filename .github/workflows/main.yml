@@ -5,7 +5,6 @@ on:
 
 env:
   PROJECT_ID: 'pingpong-436120' # TODO: update to your Google Cloud project ID
-  GAR_LOCATION: 'us-central1' # TODO: update to your region
   GKE_CLUSTER: 'autopilot-cluster-3' # TODO: update to your cluster name
   GKE_ZONE: 'us-central1' # TODO: update to your cluster zone
   DEPLOYMENT_NAME: 'gke-project' # TODO: update to your deployment name
@@ -37,7 +36,7 @@ jobs:
         uses: 'google-github-actions/auth@f112390a2df9932162083945e46d439060d66ec2' # google-github-actions/auth@v2
         with:
           workload_identity_provider: '${{ env.WORKLOAD_IDENTITY_PROVIDER }}'
-          service_account: 'github-actions@pingpong-436120.iam.gserviceaccount.com'
+          project_id: ${{ env.PROJECT_ID }}
 
       - name: 'Set up Cloud SDK'
         uses: google-github-actions/setup-gcloud@v2
@@ -49,10 +48,9 @@ jobs:
 
       # Get the GKE credentials so we can deploy to the cluster
       - name: 'Set up GKE credentials'
-        uses: 'google-github-actions/get-gke-credentials@6051de21ad50fbb1767bc93c11357a49082ad116' # google-github-actions/get-gke-credentials@v2
+        uses: 'google-github-actions/get-gke-credentials@v2' # google-github-actions/get-gke-credentials@v2
         with:
           cluster_name: ${{ env.GKE_CLUSTER }}
-          project_id: ${{ env.PROJECT_ID }}
           location: ${{ env.GKE_ZONE }}
 
       # Build the Docker image
