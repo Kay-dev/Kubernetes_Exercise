@@ -62,11 +62,11 @@ jobs:
       - name: Build and publish
         run: |-
           cd part3/Exercise_3.03_Project_v1.4/Todo-app
-          docker build --tag "gcr.io/$PROJECT_ID/$TODO_APP_IMAGE:${GITHUB_REF#refs/heads/}-$GITHUB_SHA" .
+          docker build --tag "gcr.io/$PROJECT_ID/$TODO_APP_IMAGE:${GITHUB_REF#refs/heads/}$GITHUB_SHA" .
           cd ../Todo-backend
-          docker build --tag "gcr.io/$PROJECT_ID/$TODO_BACKEND_IMAGE:${GITHUB_REF#refs/heads/}-$GITHUB_SHA" .
-          docker push "gcr.io/$PROJECT_ID/$TODO_APP_IMAGE:${GITHUB_REF#refs/heads/}-$GITHUB_SHA"
-          docker push "gcr.io/$PROJECT_ID/$TODO_BACKEND_IMAGE:${GITHUB_REF#refs/heads/}-$GITHUB_SHA"
+          docker build --tag "gcr.io/$PROJECT_ID/$TODO_BACKEND_IMAGE:${GITHUB_REF#refs/heads/}$GITHUB_SHA" .
+          docker push "gcr.io/$PROJECT_ID/$TODO_APP_IMAGE:${GITHUB_REF#refs/heads/}$GITHUB_SHA"
+          docker push "gcr.io/$PROJECT_ID/$TODO_BACKEND_IMAGE:${GITHUB_REF#refs/heads/}$GITHUB_SHA"
       # Set up kustomize
       - name: Set up Kustomize
         uses: imranismail/setup-kustomize@v2
