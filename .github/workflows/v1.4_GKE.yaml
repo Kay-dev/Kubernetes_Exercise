@@ -62,11 +62,11 @@ jobs:
       - name: Build and publish
         run: |-
           cd part3/Exercise_3.03_Project_v1.4/Todo-app
-          docker build --tag "gcr.io/$PROJECT_ID/$TODO_APP_IMAGE:${GITHUB_REF#refs/heads/}$GITHUB_SHA" .
+          docker build --tag "gcr.io/$PROJECT_ID/$TODO_APP_IMAGE:${GITHUB_REF#refs/heads/}-$GITHUB_SHA" .
           cd ../Todo-backend
-          docker build --tag "gcr.io/$PROJECT_ID/$TODO_BACKEND_IMAGE:${GITHUB_REF#refs/heads/}$GITHUB_SHA" .
-          docker push "gcr.io/$PROJECT_ID/$TODO_APP_IMAGE:${GITHUB_REF#refs/heads/}$GITHUB_SHA"
-          docker push "gcr.io/$PROJECT_ID/$TODO_BACKEND_IMAGE:${GITHUB_REF#refs/heads/}$GITHUB_SHA"
+          docker build --tag "gcr.io/$PROJECT_ID/$TODO_BACKEND_IMAGE:${GITHUB_REF#refs/heads/}-$GITHUB_SHA" .
+          docker push "gcr.io/$PROJECT_ID/$TODO_APP_IMAGE:${GITHUB_REF#refs/heads/}-$GITHUB_SHA"
+          docker push "gcr.io/$PROJECT_ID/$TODO_BACKEND_IMAGE:${GITHUB_REF#refs/heads/}-$GITHUB_SHA"
       # Set up kustomize
       - name: Set up Kustomize
         uses: imranismail/setup-kustomize@v2
@@ -75,7 +75,7 @@ jobs:
       - name: 'Deploy to GKE'
         run: |-
           cd part3/Exercise_3.03_Project_v1.4
-          kustomize edit set image TODO_APP_IMAGE=gcr.io/$PROJECT_ID/$TODO_APP_IMAGE:$BRANCH-$GITHUB_SHA TODO_BACKEND_IMAGE=gcr.io/$PROJECT_ID/$TODO_BACKEND_IMAGE:$BRANCH-$GITHUB_SHA
+          kustomize edit set image TODO_APP_IMAGE=gcr.io/$PROJECT_ID/$TODO_APP_IMAGE:${GITHUB_REF#refs/heads/}-$GITHUB_SHA TODO_BACKEND_IMAGE=gcr.io/$PROJECT_ID/$TODO_BACKEND_IMAGE:${GITHUB_REF#refs/heads/}-$GITHUB_SHA
           kustomize build . | kubectl apply -f -
           kubectl rollout status deployment/$DEPLOYMENT_NAME
           kubectl get services -o wide
