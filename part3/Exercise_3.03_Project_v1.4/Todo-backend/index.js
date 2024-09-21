@@ -6,10 +6,6 @@ const cors = require('@koa/cors');
 const app = new Koa()
 const port = process.env.PORT || 3004;
 
-const router = new Router({
-    prefix: '/api'
-});
-
 app.use(bodyParser());
 app.use(cors({
     origin: '*',
@@ -43,8 +39,14 @@ async function initializeDatabase() {
     }
 }
 
-
+// health check
 router.get('/', async (ctx) => {
+    ctx.status = 200;
+    ctx.body = 'OK';
+})
+
+router.get('/api', async (ctx) => {
+
     const client = await pool.connect();
     try {
         const result = await client.query('SELECT * FROM todos');
@@ -55,7 +57,7 @@ router.get('/', async (ctx) => {
     }
 });
 
-router.post('/', async (ctx) => {
+router.post('/api', async (ctx) => {
     const client = await pool.connect();
     try {
         const { data } = ctx.request.body;
