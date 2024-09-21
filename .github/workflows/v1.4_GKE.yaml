@@ -10,7 +10,7 @@ on:
 
 env:
 
-  PROJECT_ID: 'pingpong-436120' # TODO: update to your Google Cloud project ID
+  PROJECT_ID: ${{ secrets.GKE_PROJECT }} # TODO: update to your Google Cloud project ID
   GKE_CLUSTER: 'autopilot-cluster-3' # TODO: update to your cluster name
   GKE_ZONE: 'us-central1' # TODO: update to your cluster zone
   DEPLOYMENT_NAME: 'gke-project' # TODO: update to your deployment name
