@@ -38,23 +38,18 @@ on:
 
 env:
   PROJECT_ID: 'pingpong-436120' # TODO: update to your Google Cloud project ID
-  GAR_LOCATION: 'us-central1' # TODO: update to your region
   GKE_CLUSTER: 'autopilot-cluster-3' # TODO: update to your cluster name
   GKE_ZONE: 'us-central1' # TODO: update to your cluster zone
   DEPLOYMENT_NAME: 'gke-project' # TODO: update to your deployment name
   TODO_APP_IMAGE: 'todo-app'
   TODO_BACKEND_IMAGE: 'todo-backend'
   WORKLOAD_IDENTITY_PROVIDER: 'projects/889674839625/locations/global/workloadIdentityPools/github/providers/my-repo'
+  BRANCH: ${{ github.ref_name }}
 
 jobs:
   setup-build-publish-deploy:
     name: 'Setup, Build, Publish, and Deploy'
     runs-on: 'ubuntu-latest'
-    environment: 'production'
-
-    permissions:
-      contents: 'read'
-      id-token: 'write'
 
     steps:
       - name: 'Checkout'
