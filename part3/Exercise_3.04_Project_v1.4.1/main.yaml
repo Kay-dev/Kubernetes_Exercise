@@ -1,0 +1,83 @@
+name: 'Build and Deploy to GKE'
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'part3/Exercise_3.04_Project_v1.4.1/**'
+      - '.github/workflows/v1.4.1_GKE.yml'
+
+env:
+  PROJECT_ID: ${{ secrets.GKE_PROJECT }} # TODO: update to your Google Cloud project ID
+  GKE_CLUSTER: 'autopilot-cluster-3' # TODO: update to your cluster name
+  GKE_ZONE: 'us-central1' # TODO: update to your cluster zone
+  DEPLOYMENT_NAME: 'todo-project-dep' # TODO: update to your deployment name
+  TODO_APP_IMAGE: 'todo-app'
+  TODO_BACKEND_IMAGE: 'todo-backend'
+
+jobs:
+  setup-build-publish-deploy:
+    name: 'Setup, Build, Publish, and Deploy'
+    runs-on: 'ubuntu-latest'
+
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+      - name: 'Checkout'
+        uses: 'actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332' # actions/checkout@v4
+
+      # Configure Workload Identity Federation and generate an access token.
+      #
+      # See https://github.com/google-github-actions/auth for more options,
+      # including authenticating via a JSON credentials file.
+      - name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@f112390a2df9932162083945e46d439060d66ec2' # google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GKE_SA_KEY }}
+
+      - name: 'Set up Cloud SDK'
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ secrets.GKE_PROJECT }}
+          service_account_key: ${{ secrets.GKE_SA_KEY }}
+          export_default_credentials: true
+
+      - name: 'Use gcloud CLI'
+        run: gcloud info
+
+      - run: gcloud --quiet auth configure-docker
+
+      # Get the GKE credentials so we can deploy to the cluster
+      - name: 'Set up GKE credentials'
+        uses: 'google-github-actions/get-gke-credentials@v2' # google-github-actions/get-gke-credentials@v2
+        with:
+          cluster_name: ${{ env.GKE_CLUSTER }}
+          location: ${{ env.GKE_ZONE }}
+
+      # Build the Docker image
+      - name: Build and publish
+        run: |-
+          cd part3/Exercise_3.04_Project_v1.4.1/Todo-app
+          docker build --tag "gcr.io/$PROJECT_ID/$TODO_APP_IMAGE:${GITHUB_REF#refs/heads/}-$GITHUB_SHA" .
+          cd ../Todo-backend
+          docker build --tag "gcr.io/$PROJECT_ID/$TODO_BACKEND_IMAGE:${GITHUB_REF#refs/heads/}-$GITHUB_SHA" .
+          docker push "gcr.io/$PROJECT_ID/$TODO_APP_IMAGE:${GITHUB_REF#refs/heads/}-$GITHUB_SHA"
+          docker push "gcr.io/$PROJECT_ID/$TODO_BACKEND_IMAGE:${GITHUB_REF#refs/heads/}-$GITHUB_SHA"
+      # Set up kustomize
+      - name: Set up Kustomize
+        uses: imranismail/setup-kustomize@v2
+
+      # Deploy the Docker image to the GKE cluster
+      - name: 'Deploy to GKE'
+        run: |-
+          cd part3/Exercise_3.04_Project_v1.4.1
+          kubectl create namespace ${GITHUB_REF#refs/heads/} || true
+          kubectl config set-context --current --namespace=${GITHUB_REF#refs/heads/}
+          kustomize edit set namespace ${GITHUB_REF#refs/heads/}
+          kustomize edit set image TODO_APP_IMAGE=gcr.io/$PROJECT_ID/$TODO_APP_IMAGE:${GITHUB_REF#refs/heads/}-$GITHUB_SHA TODO_BACKEND_IMAGE=gcr.io/$PROJECT_ID/$TODO_BACKEND_IMAGE:${GITHUB_REF#refs/heads/}-$GITHUB_SHA
+          kustomize build . | kubectl apply -f -
+          kubectl rollout status deployment/$DEPLOYMENT_NAME
+          kubectl get services -o wide
