@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: backup
+spec:
+  schedule: "0 0 * * *" # run every day at midnight
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: backup
+              image: jakousa/simple-backup-example
+          restartPolicy: OnFailure
+          env:
+            - name: URL
+              value: "postgres://postgres:example@postgres-service:5432/postgres"
