@@ -1,0 +1,18 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - manifests/postgres-configmap.yaml
+  - manifests/postgres-secret.yaml
+  - manifests/persistentvolumeclaim.yaml
+  - manifests/statefulset.yaml
+  - manifests/todoapp-service.yaml
+  - manifests/todobackend-service.yaml
+  - manifests/ingress.yaml
+  - manifests/deployment.yaml
+images:
+  - name: TODO_APP_IMAGE
+    newName: sonawei/todo-app:v4.05
+  - name: TODO_BACKEND_IMAGE
+    newName: sonawei/todo-backend:v4.06
+  - name: BROADCASTER_IMAGE
+    newName: sonawei/broadcaster:v4.06

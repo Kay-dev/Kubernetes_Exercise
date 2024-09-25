@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: cpu-rate
+spec:
+  metrics:
+    - name: cpu-usage-rate
+      initialDelay: 2m
+      interval: 30s # check every 30 seconds
+      count: 20 # check 20 times
+      successCondition: result <= 500 # if the result is less than 500, the analysis is successful
+      failureCondition: result > 500 # if the result is greater than 500, the analysis is failed
+      provider:
+        prometheus:
+          address: http://kube-prometheus-stack-1726-prometheus.prometheus.svc.cluster.local:9090
+          # query to get the cpu usage rate of the container in milli-cores
+          query: |
+            sum(rate(container_cpu_usage_seconds_total{namespace="project-ns"}[10m])) * 1000 
