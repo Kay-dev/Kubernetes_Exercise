@@ -1,17 +1,17 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - manifests/deployment.yaml
-  - manifests/ingress.yaml
-  - manifests/logout-service.yaml
-  - manifests/pingpong-service.yaml
-  - manifests/postgres-configmap.yaml
-  - manifests/postgres-secret.yaml
-  - manifests/statefulset.yaml
+- manifests/deployment.yaml
+- manifests/ingress.yaml
+- manifests/logout-service.yaml
+- manifests/pingpong-service.yaml
+- manifests/postgres-configmap.yaml
+- manifests/postgres-secret.yaml
+- manifests/statefulset.yaml
 images:
-  - name: LOGOUT_SERVICE_IMAGE
-    newName: sonawei/logout-service
-    newTag: latest
-  - name: PINGPONG_SERVICE_IMAGE
-    newName: sonawei/pingpong
-    newTag: latest
+- name: LOGOUT_SERVICE_IMAGE
+  newName: sonawei/logout-service
+  newTag: latest
+- name: PINGPONG_SERVICE_IMAGE
+  newName: sonawei/pingpong
+  newTag: 0c4d50af20ec3cef124bc970cf73b1a0728285e8
