@@ -10,8 +10,8 @@ resources:
   - manifests/statefulset.yaml
 images:
 - name: LOGOUT_SERVICE_IMAGE
-  newName: sonawei/logout-service
-  newTag: latest
+  newName: sonawei/log-output
+  newTag: v4.01
 - name: PINGPONG_SERVICE_IMAGE
   newName: sonawei/pingpong
   newTag: 0c4d50af20ec3cef124bc970cf73b1a0728285e8
