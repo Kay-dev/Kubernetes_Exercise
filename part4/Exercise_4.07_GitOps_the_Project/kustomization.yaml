@@ -3,7 +3,7 @@ kind: Kustomization
 resources:
   - manifests/deployment.yaml
   - manifests/ingress.yaml
-  - manifests/logout-service.yaml
+  - manifests/logoutput-service.yaml
   - manifests/pingpong-service.yaml
   - manifests/postgres-configmap.yaml
   - manifests/postgres-secret.yaml
