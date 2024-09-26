@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'part4/Exercise_4.07_GitOps_the_Project/Pingpong/**'
+      - '.github/workflows/workflow4.07.yaml'
 
 jobs:
   build-publish:
