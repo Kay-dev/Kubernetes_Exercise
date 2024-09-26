@@ -1,10 +1,9 @@
-name: Build and publish Pingpong service
+name: Build and publish application
 
 on:
   push:
     paths:
       - 'part4/Exercise_4.07_GitOps_the_Project/Pingpong/**'
-      - '.github/workflows/workflow4.07.yaml'
 
 jobs:
   build-publish:
@@ -24,6 +23,7 @@ jobs:
       # tag image with the GitHub SHA to get a unique tag
       - name: Build and publish backend
         run: |-
+          cd part4/Exercise_4.07_GitOps_the_Project/Pingpong
           docker build --tag "sonawei/pingpong:$GITHUB_SHA" .
           docker push "sonawei/pingpong:$GITHUB_SHA"
 
@@ -31,7 +31,7 @@ jobs:
         uses: imranismail/setup-kustomize@v2
 
       - name: Use right image
-        run: kustomize edit set image PROJECT/IMAGE=mluukkai/dwk1:$GITHUB_SHA
+        run: kustomize edit set image PINGPONG_SERVICE_IMAGE=sonawei/pingpong:$GITHUB_SHA
 
       - name: commit kustomization.yaml to GitHub
         uses: EndBug/add-and-commit@v9
