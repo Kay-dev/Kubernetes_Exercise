@@ -1,4 +1,5 @@
 namePrefix: staging-
+namespace: staging
 resources:
   - ../../base
 patches:
