@@ -2,8 +2,8 @@ namePrefix: prod-
 resources:
   - DBbackup.yaml
   - ../../base
-patchesStrategicMerge:
-  - deployment.yaml
+patches:
+  - path: deployment.yaml
 images:
   - name: TODO_APP_IMAGE
     newName: sonawei/todo-app
