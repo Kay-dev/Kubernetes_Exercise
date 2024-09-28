@@ -14,6 +14,6 @@ spec:
           - name: POSTGRES_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: postgres-secret
+                name: sealed-secret
                 key: POSTGRES_PASSWORD
       restartPolicy: Never # This time we'll run it only once

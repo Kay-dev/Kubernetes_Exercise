@@ -1,4 +1,3 @@
-namePrefix: prod-
 namespace: prod
 resources:
   - DBbackup.yaml
