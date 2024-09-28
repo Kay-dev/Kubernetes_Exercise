@@ -1,0 +1,19 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: backup
+spec:
+  template:
+    spec:
+      containers:
+      - name: backup
+        image: jakousa/simple-backup-example
+        env:
+          - name: URL
+            value: "postgres://postgres:$(POSTGRES_PASSWORD)@postgres-service:5432/postgres"
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: postgres-secret
+                key: POSTGRES_PASSWORD
+      restartPolicy: Never # This time we'll run it only once

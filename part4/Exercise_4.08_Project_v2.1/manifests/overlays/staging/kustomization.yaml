@@ -1,0 +1,15 @@
+namePrefix: staging-
+resources:
+  - ../../base
+patchesStrategicMerge:
+  - deployment.yaml
+images:
+  - name: TODO_APP_IMAGE
+    newName: sonawei/todo-app
+    newTag: v4.05
+  - name: TODO_BACKEND_IMAGE
+    newName: sonawei/todo-backend
+    newTag: v4.06 
+  - name: BROADCASTER_IMAGE
+    newName: sonawei/broadcaster
+    newTag: v4.06

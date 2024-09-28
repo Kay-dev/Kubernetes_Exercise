@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - postgres-configmap.yaml
+  - sealed-secret.yaml
+  - persistentvolumeclaim.yaml
+  - statefulset.yaml
+  - todoapp-service.yaml
+  - todobackend-service.yaml
+  - ingress.yaml
+  - deployment.yaml
+
