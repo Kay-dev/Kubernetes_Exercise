@@ -107,12 +107,12 @@ spec:
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
-                  name: postgres-secret
+                  name: sealed-secret
                   key: POSTGRES_USER
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: postgres-secret
+                  name: sealed-secret
                   key: POSTGRES_PASSWORD
             - name: POSTGRES_DB
               valueFrom:

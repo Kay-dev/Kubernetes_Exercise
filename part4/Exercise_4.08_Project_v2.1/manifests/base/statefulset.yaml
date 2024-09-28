@@ -22,7 +22,7 @@ spec:
             - configMapRef:
                 name: postgres-configmap # DB configuration file
             - secretRef:
-                name: postgres-secret # DB credentials file
+                name: sealed-secret # DB credentials file
           volumeMounts:
             - name: postgres-pv-claim
               mountPath: /var/lib/postgresql/data
