@@ -1,0 +1,66 @@
+name: Build and publish project
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'part4/Exercise_4.08_Project_v2.1/Broadcaster'
+      - 'part4/Exercise_4.08_Project_v2.1/Todo-app'
+      - 'part4/Exercise_4.08_Project_v2.1/Todo-backend'
+      - '.github/workflows/workflow4.08-gitops.yaml'
+
+jobs:
+  build-publish-gitops:
+    if: github.ref == 'refs/heads/main'
+    name: Build, Push, Release Staging
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set ENV_NAME based on branch or tag
+        run: |
+          if [[ "${{ github.ref }}" == refs/heads/main ]]; then
+            echo "ENV_NAME=staging" >> $GITHUB_ENV
+          elif [[ "${{ github.ref }}" == refs/tags/* ]]; then
+            echo "ENV_NAME=prod" >> $GITHUB_ENV
+          else
+            echo "ENV_NAME=unknown" >> $GITHUB_ENV
+          fi
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # tag image with the GitHub SHA to get a unique tag
+      - name: Build and publish images
+        run: |-
+          cd part4/Exercise_4.08_Project_v2.1/Broadcaster
+          docker build --tag "sonawei/broadcaster:$GITHUB_SHA" .
+          docker push "sonawei/broadcaster:$GITHUB_SHA"
+          cd ../Todo-app
+          docker build --tag "sonawei/todo-app:$GITHUB_SHA" .
+          docker push "sonawei/todo-app:$GITHUB_SHA"
+          cd ../Todo-backend
+          docker build --tag "sonawei/todo-backend:$GITHUB_SHA" .
+          docker push "sonawei/todo-backend:$GITHUB_SHA"
+
+      - name: Set up Kustomize
+        uses: imranismail/setup-kustomize@v2
+
+      - name: Use right image
+        run: |-
+          cd part4/Exercise_4.08_Project_v2.1/manifests/overlays/${{ env.ENV_NAME }}
+          kustomize edit set image BROADCASTER_IMAGE=sonawei/broadcaster:$GITHUB_SHA
+          kustomize edit set image TODO_APP_IMAGE=sonawei/todo-app:$GITHUB_SHA
+          kustomize edit set image TODO_BACKEND_IMAGE=sonawei/todo-backend:$GITHUB_SHA
+
+      - name: commit kustomization.yaml to GitHub
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: 'part4/Exercise_4.08_Project_v2.1/manifests/overlays/${{ env.ENV_NAME }}/kustomization.yaml'
+          message: New version released ${{ github.sha }}
