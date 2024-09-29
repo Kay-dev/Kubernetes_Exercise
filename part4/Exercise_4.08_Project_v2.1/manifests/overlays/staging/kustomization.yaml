@@ -1,19 +1,21 @@
 namespace: staging
 resources:
-  - ../../base
+- ../../base
 patches:
-  - path: deployment.yaml
+- path: deployment.yaml
 images:
-  - name: TODO_APP_IMAGE
-    newName: sonawei/todo-app
-    newTag: v4.05
-  - name: TODO_BACKEND_IMAGE
-    newName: sonawei/todo-backend
-    newTag: v4.06 
-  - name: BROADCASTER_IMAGE
-    newName: sonawei/broadcaster
-    newTag: v4.06
+- name: BROADCASTER_IMAGE
+  newName: sonawei/broadcaster
+  newTag: aa6962acdd24685dbc80407c26300a6e89a5ca1e
+- name: TODO_APP_IMAGE
+  newName: sonawei/todo-app
+  newTag: aa6962acdd24685dbc80407c26300a6e89a5ca1e
+- name: TODO_BACKEND_IMAGE
+  newName: sonawei/todo-backend
+  newTag: aa6962acdd24685dbc80407c26300a6e89a5ca1e
 configMapGenerator:
-  - name: nats-config
-    literals:
-      - NATS_URL=nats://nats.default.svc.cluster.local:4222
+- literals:
+  - NATS_URL=nats://nats.default.svc.cluster.local:4222
+  name: nats-config
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
