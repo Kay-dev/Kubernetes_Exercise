@@ -13,3 +13,7 @@ images:
   - name: BROADCASTER_IMAGE
     newName: sonawei/broadcaster
     newTag: v4.06
+configMapGenerator:
+  - name: nats-config
+    literals:
+      - NATS_URL=nats://nats.default.svc.cluster.local:4222

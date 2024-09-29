@@ -18,7 +18,7 @@ spec:
           imagePullPolicy: Always
           env:
             - name: NATS_URL
-              value: "nats://nats:4222"
+              value: "nats://nats.default.svc.cluster.local:4222"
             - name: TELEGRAM_TOKEN
               valueFrom:
                 secretKeyRef:
@@ -103,7 +103,7 @@ spec:
             periodSeconds: 5
           env:
             - name: NATS_URL
-              value: "nats://nats:4222"
+              value: "nats://nats.default.svc.cluster.local:4222"
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
