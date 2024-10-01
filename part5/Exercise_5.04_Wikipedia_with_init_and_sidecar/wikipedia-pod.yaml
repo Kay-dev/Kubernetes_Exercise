@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: wikipedia-pod
+  namespace: wikipedia
+
+spec:
+# Init container
+  initContainers:
+    - name: fetch-wikipedia-page
+      image: curlimages/curl
+      command:
+        - sh
+        - -c
+        - |
+          curl -o /usr/share/nginx/html/index.html https://en.wikipedia.org/wiki/Kubernetes
+      volumeMounts:
+        - name: wikipedia
+          mountPath: /usr/share/nginx/html
+# Main container
+  containers:
+    - name: nginx-server
+      image: nginx:alpine
+      ports:
+        - containerPort: 80
+      volumeMounts:
+        - name: wikipedia
+          mountPath: /usr/share/nginx/html
+
+# Sidecar container
+    - name: random-fetcher
+      image: curlimages/curl
+      command:
+        - sh
+        - -c
+        - |
+          while true; do
+            WAIT_TIME=$((RANDOM % 600 + 300))
+            sleep $WAIT_TIME
+            curl -o /usr/share/nginx/html/index.html https://en.wikipedia.org/wiki/Special:Random
+          done
+      volumeMounts:
+        - name: wikipedia
+          mountPath: /usr/share/nginx/html
+  volumes:
+    - name: wikipedia
+      emptyDir: {}
+        

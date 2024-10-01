@@ -1,0 +1,67 @@
+apiVersion: flagger.app/v1beta1
+kind: Canary
+metadata:
+  name: podinfo
+  namespace: test
+spec:
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: podinfo
+  service:
+    # service port number
+    port: 9898
+    # container port number or name (optional)
+    targetPort: 9898
+    # Reference to the Service that the generated HTTPRoute would attach to.
+    gatewayRefs:
+      - name: podinfo
+        namespace: test
+        group: core
+        kind: Service
+        port: 9898
+  analysis:
+    interval: 10s
+    threshold: 5
+    stepWeight: 10
+    maxWeight: 100
+    metrics:
+    - name: success-rate
+      templateRef:
+        name: success-rate
+        namespace: test
+      thresholdRange:
+        min: 99
+      interval: 1m
+---
+apiVersion: flagger.app/v1beta1
+kind: MetricTemplate
+metadata:
+  name: success-rate
+  namespace: test
+spec:
+  provider:
+    type: prometheus
+    address: http://prometheus.linkerd-viz:9090
+  query: |
+    sum(
+      rate(
+        response_total{
+          namespace="{{ namespace }}",
+          deployment=~"{{ target }}",
+          classification!="failure",
+          direction="inbound"
+        }[{{ interval }}]
+      )
+    ) 
+    / 
+    sum(
+      rate(
+        response_total{
+          namespace="{{ namespace }}",
+          deployment=~"{{ target }}",
+          direction="inbound"
+        }[{{ interval }}]
+      )
+    ) 
+    * 100
