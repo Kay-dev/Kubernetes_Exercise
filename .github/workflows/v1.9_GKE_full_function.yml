@@ -71,6 +71,15 @@ jobs:
       - name: Set up Kustomize
         uses: imranismail/setup-kustomize@v2
 
+      # Install Argo Rollouts for canary release
+      - name: Install Argo Rollouts
+        run: |
+          kubectl create namespace argo-rollouts || true
+          kubectl apply -f https://github.com/argoproj/argo-rollouts/releases/latest/download/install.yaml
+          # Wait for the installation to complete
+          kubectl wait --for=condition=established --timeout=60s crd/rollouts.argoproj.io
+          kubectl wait --for=condition=established --timeout=60s crd/analysistemplates.argoproj.io
+
       # Deploy the Docker image to the GKE cluster
       - name: 'Deploy to GKE'
         run: |-
