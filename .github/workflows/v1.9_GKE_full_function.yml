@@ -89,5 +89,4 @@ jobs:
           kustomize edit set namespace ${GITHUB_REF#refs/heads/}
           kustomize edit set image TODO_APP_IMAGE=gcr.io/$PROJECT_ID/$TODO_APP_IMAGE:${GITHUB_REF#refs/heads/}-$GITHUB_SHA TODO_BACKEND_IMAGE=gcr.io/$PROJECT_ID/$TODO_BACKEND_IMAGE:${GITHUB_REF#refs/heads/}-$GITHUB_SHA
           kustomize build . | kubectl apply -f -
-          kubectl rollout status deployment/$DEPLOYMENT_NAME
           kubectl get services -o wide
